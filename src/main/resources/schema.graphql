@@ -3,11 +3,31 @@ schema {
 }
 
 type QueryType {
-    user(id: String): User
-    users: [User]
+    character(id: String): Character
+    characters: [Character]
 }
 
-type User {
+type Character {
+    id: ID!
+    firstName: String
+    lastName: String
+    family: Boolean
+}
+
+type Episode {
     id: ID!
     name: String
+    season: Season
+}
+
+enum Season {
+    Season1,
+    Season2,
+    Season3,
+    Season4,
+    Season5,
+    Season6,
+    Season7,
+    Season8,
+    Season9
 }

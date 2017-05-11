@@ -18,10 +18,10 @@ public class Schema {
 
 
     @Autowired
-    UserRepository userRepository;
+    CharacterRepository characterRepository;
 
-    private DataFetcher<UserRepository.User> userDataFetcher = environment -> userRepository.getUser(environment.getArgument("id"));
-    private DataFetcher<List<UserRepository.User>> allUsers = environment -> userRepository.getAllUsers();
+    private DataFetcher<CharacterRepository.Character> characterDataFetcher = environment -> characterRepository.getCharacter(environment.getArgument("id"));
+    private DataFetcher<List<CharacterRepository.Character>> allCharacters = environment -> characterRepository.getAll();
 
     public GraphQLSchema getSchema() {
         try {
@@ -39,8 +39,8 @@ public class Schema {
     private RuntimeWiring buildRuntimeWiring() {
         return RuntimeWiring.newRuntimeWiring()
                 .type("QueryType", typeWiring -> typeWiring.typeName("QueryType")
-                        .dataFetcher("user", userDataFetcher)
-                        .dataFetcher("users", allUsers))
+                        .dataFetcher("character", characterDataFetcher)
+                        .dataFetcher("characters", allCharacters))
                 .build();
     }
 
