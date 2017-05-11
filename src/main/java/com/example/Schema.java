@@ -20,8 +20,8 @@ public class Schema {
     @Autowired
     CharacterRepository characterRepository;
 
-    private DataFetcher<CharacterRepository.Character> characterDataFetcher = environment -> characterRepository.getCharacter(environment.getArgument("id"));
-    private DataFetcher<List<CharacterRepository.Character>> allCharacters = environment -> characterRepository.getAll();
+    @Autowired
+    EpisodeRepository episodeRepository;
 
     public GraphQLSchema getSchema() {
         try {
@@ -36,11 +36,23 @@ public class Schema {
         }
     }
 
+    DataFetcher<CharacterRepository.Character> characterDataFetcher = environment -> characterRepository.getCharacter(environment.getArgument("id"));
+    DataFetcher<List<CharacterRepository.Character>> allCharacters = environment -> characterRepository.getAll();
+    DataFetcher<List<EpisodeRepository.Episode>> allEpisodes = environment -> episodeRepository.getAll();
+
+    DataFetcher<String> getSeason = environment -> {
+        EpisodeRepository.Episode episode = environment.getSource();
+        return episode.season.name();
+    };
+
     private RuntimeWiring buildRuntimeWiring() {
         return RuntimeWiring.newRuntimeWiring()
-                .type("QueryType", typeWiring -> typeWiring.typeName("QueryType")
+                .type("QueryType", typeWiring -> typeWiring
                         .dataFetcher("character", characterDataFetcher)
-                        .dataFetcher("characters", allCharacters))
+                        .dataFetcher("characters", allCharacters)
+                        .dataFetcher("episodes", allEpisodes)
+                ).type("Episode", typeWiring -> typeWiring
+                        .dataFetcher("season", getSeason))
                 .build();
     }
 

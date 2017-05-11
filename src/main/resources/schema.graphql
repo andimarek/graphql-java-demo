@@ -5,6 +5,7 @@ schema {
 type QueryType {
     character(id: String): Character
     characters: [Character]
+    episodes: [Episode]
 }
 
 type Character {
@@ -18,6 +19,8 @@ type Episode {
     id: ID!
     name: String
     season: Season
+    number: Int
+    numberTotal: Int
 }
 
 enum Season {
