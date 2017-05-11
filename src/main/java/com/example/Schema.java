@@ -71,6 +71,12 @@ public class Schema {
         return new MutationResult();
     };
 
+    /**
+     * Explicit DataFetcher: It this case it is just an example and not needed because the default DataFetcher
+     * will look for a property with the name of the field in the source object (which is a Character)
+     */
+    DataFetcher<String> firstName = environment -> ((CharacterRepository.Character) environment.getSource()).firstName;
+
     private RuntimeWiring buildRuntimeWiring() {
         return RuntimeWiring.newRuntimeWiring()
                 .type("MutationType", typeWiring -> typeWiring
@@ -83,8 +89,9 @@ public class Schema {
                         .dataFetcher("season", getSeason)
                         .dataFetcher("characters", getCharactersForEpisode)
                 ).type("Character", typeWiring -> typeWiring
-                        .dataFetcher("episodes", episodesForCharacter))
-                .build();
+                        .dataFetcher("episodes", episodesForCharacter)
+                        .dataFetcher("firstName", firstName)
+                ).build();
     }
 
 }
