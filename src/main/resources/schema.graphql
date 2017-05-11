@@ -13,6 +13,7 @@ type Character {
     firstName: String
     lastName: String
     family: Boolean
+    episodes: [Episode]
 }
 
 type Episode {

@@ -50,6 +50,11 @@ public class Schema {
         return characterRepository.getCharactersById(episode.characterRefs);
     };
 
+    DataFetcher<List<EpisodeRepository.Episode>> episodesForCharacter = environment -> {
+        CharacterRepository.Character character = environment.getSource();
+        return episodeRepository.getEpisodesWithCharacter(character.id);
+    };
+
     private RuntimeWiring buildRuntimeWiring() {
         return RuntimeWiring.newRuntimeWiring()
                 .type("QueryType", typeWiring -> typeWiring
@@ -58,7 +63,9 @@ public class Schema {
                         .dataFetcher("episodes", allEpisodes)
                 ).type("Episode", typeWiring -> typeWiring
                         .dataFetcher("season", getSeason)
-                        .dataFetcher("characters", getCharactersForEpisode))
+                        .dataFetcher("characters", getCharactersForEpisode)
+                ).type("Character", typeWiring -> typeWiring
+                        .dataFetcher("episodes", episodesForCharacter))
                 .build();
     }
 

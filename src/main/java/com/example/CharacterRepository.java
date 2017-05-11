@@ -25,7 +25,6 @@ public class CharacterRepository {
         public boolean family;
 
 
-        public List<Character> friends = new ArrayList<>();
 
     }
 
