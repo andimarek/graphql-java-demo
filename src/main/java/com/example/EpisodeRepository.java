@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -38,7 +39,11 @@ public class EpisodeRepository {
             this.season = season;
         }
 
-        public List<CharacterRepository.Character> characters = new ArrayList<>();
+        public List<String> characterRefs = new ArrayList<>();
+
+        void addCharacter(String... characterId) {
+            this.characterRefs.addAll(Arrays.asList(characterId));
+        }
 
     }
 
@@ -52,9 +57,16 @@ public class EpisodeRepository {
         Episode ep418 = new Episode("4", "So It's Come to This: A Simpsons Clip Show", 18, 77, Season.Season4);
 
         episodes.add(ep11);
+        ep11.addCharacter("1", "2");
         episodes.add(ep12);
+        ep12.addCharacter("1", "2", "3");
+
         episodes.add(ep33);
+        ep33.addCharacter("4", "5");
+
         episodes.add(ep418);
+        ep418.addCharacter("1", "2", "3", "6");
+
 
     }
 

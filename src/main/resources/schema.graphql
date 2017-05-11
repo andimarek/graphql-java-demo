@@ -21,6 +21,7 @@ type Episode {
     season: Season
     number: Int
     numberTotal: Int
+    characters: [Character]
 }
 
 enum Season {
