@@ -56,6 +56,10 @@ public class CharacterRepository {
         return found.size() > 0 ? found.get(0) : null;
     }
 
+    public Character getCharacterByName(String firstName) {
+        List<Character> found = characters.stream().filter(character -> character.firstName.equals(firstName)).collect(Collectors.toList());
+        return found.size() > 0 ? found.get(0) : null;
+    }
     public List<Character> getCharactersById(List<String> ids) {
         List<Character> found = characters.stream().filter(character -> ids.contains(character.id)).collect(Collectors.toList());
         return found;

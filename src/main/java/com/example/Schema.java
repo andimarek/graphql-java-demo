@@ -36,7 +36,9 @@ public class Schema {
         }
     }
 
-    DataFetcher<CharacterRepository.Character> characterDataFetcher = environment -> characterRepository.getCharacter(environment.getArgument("id"));
+    DataFetcher<CharacterRepository.Character> characterDataFetcher = environment ->
+            characterRepository.getCharacterByName(environment.getArgument("firstName"));
+
     DataFetcher<List<CharacterRepository.Character>> allCharacters = environment -> characterRepository.getAll();
     DataFetcher<List<EpisodeRepository.Episode>> allEpisodes = environment -> episodeRepository.getAll();
 

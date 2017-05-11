@@ -3,7 +3,7 @@ schema {
 }
 
 type QueryType {
-    character(id: String): Character
+    character(firstName: String): Character
     characters: [Character]
     episodes: [Episode]
 }
@@ -21,7 +21,7 @@ type Episode {
     name: String
     season: Season
     number: Int
-    numberTotal: Int
+    numberOverall: Int
     characters: [Character]
 }
 
