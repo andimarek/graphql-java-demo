@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class Schema {
 
@@ -19,6 +21,7 @@ public class Schema {
     UserRepository userRepository;
 
     private DataFetcher<UserRepository.User> userDataFetcher = environment -> userRepository.getUser(environment.getArgument("id"));
+    private DataFetcher<List<UserRepository.User>> allUsers = environment -> userRepository.getAllUsers();
 
     public GraphQLSchema getSchema() {
         try {
@@ -36,7 +39,8 @@ public class Schema {
     private RuntimeWiring buildRuntimeWiring() {
         return RuntimeWiring.newRuntimeWiring()
                 .type("QueryType", typeWiring -> typeWiring.typeName("QueryType")
-                        .dataFetcher("user", userDataFetcher))
+                        .dataFetcher("user", userDataFetcher)
+                        .dataFetcher("users", allUsers))
                 .build();
     }
 

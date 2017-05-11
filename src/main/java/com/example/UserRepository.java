@@ -39,7 +39,7 @@ public class UserRepository {
         return found.size() > 0 ? found.get(0) : null;
     }
 
-    public List<User> getAllUses() {
+    public List<User> getAllUsers() {
         return users;
     }
 }
