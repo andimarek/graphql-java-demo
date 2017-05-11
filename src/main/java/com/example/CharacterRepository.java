@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 @Service
 public class CharacterRepository {
 
+
     public static class Character {
 
         public Character(String id, String firstName, String lastName, boolean family) {
@@ -25,22 +26,26 @@ public class CharacterRepository {
         public boolean family;
 
 
-
     }
 
 
     private List<Character> characters = new ArrayList<>();
 
+    private int id = 1;
+
+    private String nextId() {
+        return Integer.toString(id++);
+    }
 
     @PostConstruct
     public void init() {
-        Character homer = new Character("1", "Homer", "Simpson", true);
-        Character marge = new Character("2", "Marge", "Simpson", true);
-        Character bart = new Character("3", "Bart", "Simpson", true);
-        Character lisa = new Character("4", "Lisa", "Simpson", true);
-        Character maggie = new Character("5", "Maggie", "Simpson", true);
+        Character homer = new Character(nextId(), "Homer", "Simpson", true);
+        Character marge = new Character(nextId(), "Marge", "Simpson", true);
+        Character bart = new Character(nextId(), "Bart", "Simpson", true);
+        Character lisa = new Character(nextId(), "Lisa", "Simpson", true);
+        Character maggie = new Character(nextId(), "Maggie", "Simpson", true);
 
-        Character carl = new Character("6", "Carl", "Carlson", false);
+        Character carl = new Character(nextId(), "Carl", "Carlson", false);
 
         characters.add(homer);
         characters.add(marge);
@@ -48,6 +53,11 @@ public class CharacterRepository {
         characters.add(lisa);
         characters.add(maggie);
         characters.add(carl);
+    }
+
+
+    public void addCharacter(String firstName, String lastName, boolean family) {
+        characters.add(new Character(nextId(), firstName, lastName, family));
     }
 
 
@@ -60,6 +70,7 @@ public class CharacterRepository {
         List<Character> found = characters.stream().filter(character -> character.firstName.equals(firstName)).collect(Collectors.toList());
         return found.size() > 0 ? found.get(0) : null;
     }
+
     public List<Character> getCharactersById(List<String> ids) {
         List<Character> found = characters.stream().filter(character -> ids.contains(character.id)).collect(Collectors.toList());
         return found;

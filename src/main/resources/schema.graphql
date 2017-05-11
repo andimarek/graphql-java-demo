@@ -1,5 +1,6 @@
 schema {
     query: QueryType
+    mutation: MutationType
 }
 
 type QueryType {
@@ -7,6 +8,21 @@ type QueryType {
     characters: [Character]
     episodes: [Episode]
 }
+
+type MutationType {
+    addCharacter(character: CharacterInput): MutationResult
+}
+
+input CharacterInput {
+    firstName: String
+    lastName: String
+    family: Boolean
+}
+
+type MutationResult {
+   success: Boolean
+}
+
 
 type Character {
     id: ID!

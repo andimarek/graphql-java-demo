@@ -12,9 +12,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class Schema {
+
+    public static class MutationResult {
+        public boolean success = true;
+    }
 
 
     @Autowired
@@ -57,9 +62,20 @@ public class Schema {
         return episodeRepository.getEpisodesWithCharacter(character.id);
     };
 
+    DataFetcher<MutationResult> addCharacter = environment -> {
+        Map<String, Object> character = environment.getArgument("character");
+        String firstName = (String) character.get("firstName");
+        String lastName = (String) character.get("lastName");
+        Boolean family = (Boolean) character.get("family");
+        characterRepository.addCharacter(firstName, lastName, family != null ? family : false);
+        return new MutationResult();
+    };
+
     private RuntimeWiring buildRuntimeWiring() {
         return RuntimeWiring.newRuntimeWiring()
-                .type("QueryType", typeWiring -> typeWiring
+                .type("MutationType", typeWiring -> typeWiring
+                        .dataFetcher("addCharacter", addCharacter)
+                ).type("QueryType", typeWiring -> typeWiring
                         .dataFetcher("character", characterDataFetcher)
                         .dataFetcher("characters", allCharacters)
                         .dataFetcher("episodes", allEpisodes)
