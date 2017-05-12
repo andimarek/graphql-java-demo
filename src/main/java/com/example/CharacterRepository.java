@@ -55,6 +55,12 @@ public class CharacterRepository {
         characters.add(carl);
     }
 
+    public List<Character> search(String searchFor) {
+        List<Character> found = characters.stream().filter(character ->
+                character.firstName.contains(searchFor) || character.lastName.contains(searchFor)
+        ).collect(Collectors.toList());
+        return found;
+    }
 
     public void addCharacter(String firstName, String lastName, boolean family) {
         characters.add(new Character(nextId(), firstName, lastName, family));

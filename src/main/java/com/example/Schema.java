@@ -2,7 +2,9 @@ package com.example;
 
 
 import graphql.schema.DataFetcher;
+import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.TypeResolver;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaCompiler;
 import graphql.schema.idl.SchemaGenerator;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,17 +32,25 @@ public class Schema {
     @Autowired
     EpisodeRepository episodeRepository;
 
-    public GraphQLSchema getSchema() {
+    GraphQLSchema graphQLSchema;
+
+    @PostConstruct
+    public void init() {
         try {
             SchemaCompiler schemaCompiler = new SchemaCompiler();
             ClassPathResource classPathResource = new ClassPathResource("schema.graphql");
             TypeDefinitionRegistry compiledSchema = schemaCompiler.compile(classPathResource.getFile());
 
             SchemaGenerator schemaGenerator = new SchemaGenerator();
-            return schemaGenerator.makeExecutableSchema(compiledSchema, buildRuntimeWiring());
+            graphQLSchema = schemaGenerator.makeExecutableSchema(compiledSchema, buildRuntimeWiring());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    public GraphQLSchema getSchema() {
+        return graphQLSchema;
     }
 
     DataFetcher<CharacterRepository.Character> characterDataFetcher = environment ->
@@ -77,6 +89,27 @@ public class Schema {
      */
     DataFetcher<String> firstName = environment -> ((CharacterRepository.Character) environment.getSource()).firstName;
 
+    DataFetcher<Object> search = environment -> {
+        String searchFor = environment.getArgument("searchFor");
+        List<CharacterRepository.Character> characters = characterRepository.search(searchFor);
+        List<EpisodeRepository.Episode> episodes = episodeRepository.search(searchFor);
+        List<Object> result = new ArrayList<>();
+        result.addAll(characters);
+        result.addAll(episodes);
+        return result;
+    };
+
+    TypeResolver everythingResolver = env -> {
+        if (env.getObject() instanceof CharacterRepository.Character) {
+            return (GraphQLObjectType) graphQLSchema.getType("Character");
+        } else if (env.getObject() instanceof EpisodeRepository.Episode) {
+            return (GraphQLObjectType) graphQLSchema.getType("Episode");
+        } else {
+            throw new RuntimeException("Uknown type" + env.getObject());
+        }
+    };
+
+
     private RuntimeWiring buildRuntimeWiring() {
         return RuntimeWiring.newRuntimeWiring()
                 .type("MutationType", typeWiring -> typeWiring
@@ -85,12 +118,15 @@ public class Schema {
                         .dataFetcher("character", characterDataFetcher)
                         .dataFetcher("characters", allCharacters)
                         .dataFetcher("episodes", allEpisodes)
+                        .dataFetcher("search", search)
                 ).type("Episode", typeWiring -> typeWiring
                         .dataFetcher("season", getSeason)
                         .dataFetcher("characters", getCharactersForEpisode)
                 ).type("Character", typeWiring -> typeWiring
                         .dataFetcher("episodes", episodesForCharacter)
                         .dataFetcher("firstName", firstName)
+                ).type("Everything", typeWiring -> typeWiring
+                        .typeResolver(everythingResolver)
                 ).build();
     }
 

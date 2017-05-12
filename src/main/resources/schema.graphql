@@ -7,7 +7,9 @@ type QueryType {
     character(firstName: String): Character
     characters: [Character]
     episodes: [Episode]
+    search(searchFor: String): [Everything]
 }
+
 
 type MutationType {
     addCharacter(character: CharacterInput): MutationResult
@@ -40,6 +42,8 @@ type Episode {
     numberOverall: Int
     characters: [Character]
 }
+
+union Everything = Character | Episode
 
 enum Season {
     Season1,

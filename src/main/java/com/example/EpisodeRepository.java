@@ -79,6 +79,12 @@ public class EpisodeRepository {
         return episodes.stream().filter(episode -> episode.characterRefs.contains(id)).collect(Collectors.toList());
     }
 
+    public List<Episode> search(String searchFor) {
+        List<Episode> found = episodes.stream().filter(episode ->
+                episode.name.contains(searchFor)
+        ).collect(Collectors.toList());
+        return found;
+    }
 
 
 }
