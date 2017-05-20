@@ -6,8 +6,8 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.TypeResolver;
 import graphql.schema.idl.RuntimeWiring;
-import graphql.schema.idl.SchemaCompiler;
 import graphql.schema.idl.SchemaGenerator;
+import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -37,9 +37,9 @@ public class Schema {
     @PostConstruct
     public void init() {
         try {
-            SchemaCompiler schemaCompiler = new SchemaCompiler();
+            SchemaParser schemaParser = new SchemaParser();
             ClassPathResource classPathResource = new ClassPathResource("schema.graphql");
-            TypeDefinitionRegistry compiledSchema = schemaCompiler.compile(classPathResource.getFile());
+            TypeDefinitionRegistry compiledSchema = schemaParser.parse(classPathResource.getFile());
 
             SchemaGenerator schemaGenerator = new SchemaGenerator();
             graphQLSchema = schemaGenerator.makeExecutableSchema(compiledSchema, buildRuntimeWiring());
