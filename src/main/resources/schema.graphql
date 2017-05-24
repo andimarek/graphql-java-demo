@@ -45,14 +45,18 @@ type Episode {
 
 union Everything = Character | Episode
 
+# Simpson seasons
 enum Season {
+    # the beginning
     Season1,
     Season2,
     Season3,
     Season4,
+    # Another one
     Season5,
     Season6,
     Season7,
     Season8,
+    # Not really the last one :-)
     Season9
 }
