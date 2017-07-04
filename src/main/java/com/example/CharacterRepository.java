@@ -13,12 +13,15 @@ public class CharacterRepository {
 
     public static class Character {
 
+
         public Character(String id, String firstName, String lastName, boolean family) {
             this.id = id;
             this.firstName = firstName;
             this.lastName = lastName;
             this.family = family;
         }
+
+        public List<Character> friends = new ArrayList<>();
 
         public String id;
         public String firstName;
@@ -53,6 +56,8 @@ public class CharacterRepository {
         characters.add(lisa);
         characters.add(maggie);
         characters.add(carl);
+
+        homer.friends.add(carl);
     }
 
     public List<Character> search(String searchFor) {
@@ -61,6 +66,7 @@ public class CharacterRepository {
         ).collect(Collectors.toList());
         return found;
     }
+
 
     public void addCharacter(String firstName, String lastName, boolean family) {
         characters.add(new Character(nextId(), firstName, lastName, family));
